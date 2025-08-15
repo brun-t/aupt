@@ -29,12 +29,11 @@ int main() {
 
   window.SetBg("#222244");
 
-  renderer.AddDrawable(std::make_unique<Circle>(
-      50.0f, sf::Vector2f(275.f, 275.f), sf::Color::Green));
-
   return window.Run(
-      []() -> core::Result<void> {
+      [&renderer]() -> core::Result<void> {
         // Load resources
+        renderer.AddDrawable(Circle(
+            50.0f, sf::Vector2f(275.f, 275.f), sf::Color::Green));
         return core::Ok();
       },
       [](float dt) -> core::Result<void> {

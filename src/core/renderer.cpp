@@ -4,10 +4,6 @@ namespace core {
 Renderer::Renderer(Window &window)
     : _window(window){};
 
-void Renderer::AddDrawable(Renderer::Drawable_ptr &&drawable) {
-  this->drawables.push_back(std::move(drawable));
-}
-
 Result<void> Renderer::Render() {
   this->_window.renderTexture.clear(this->_window._bg_color);
   Result<void> result;
