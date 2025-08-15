@@ -28,6 +28,9 @@ private:
   sf::Event ev;
 };
 
+// forward reference
+class Renderer;
+
 /**
  * @brief The Class for make a Window
  * @param width is the width of the window
@@ -56,9 +59,13 @@ public:
   }
 
 private:
+  friend class Renderer;
+
   sf::RenderWindow _window;
   sf::Color _bg_color;
+  sf::RenderTexture renderTexture;
   ui width, height;
+  float delta;
   std::string title;
   EventHandle handle;
 };

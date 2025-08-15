@@ -4,6 +4,8 @@
  */
 #pragma once
 
+#include "renderer.hpp"
 #include "result.hpp"
 #include "types.hpp"
+#include "utils.hpp"
 #include "window.hpp"

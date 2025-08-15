@@ -14,6 +14,7 @@ target_include_directories(core PUBLIC include/core)
 target_sources(core
     PRIVATE
         src/core/window.cpp
+				src/core/renderer.cpp
 )
 
 target_link_libraries(core PUBLIC SFML::Graphics)

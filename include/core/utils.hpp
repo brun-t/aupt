@@ -1,3 +1,5 @@
+#pragma once
+
 #include "result.hpp"
 #include <SFML/Graphics/Color.hpp>
 #include <cstdint>

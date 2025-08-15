@@ -6,7 +6,9 @@ Window::Window(ui width, ui height, const std::string &title) {
   this->height = height;
   this->width = width;
   this->title = title;
+  this->delta = 0.f;
   this->_window = sf::RenderWindow(sf::VideoMode({this->width, this->height}), this->title);
+  this->renderTexture = sf::RenderTexture({this->width, this->height});
 }
 
 Result<void> Window::SetBg(const std::string &bg) {
@@ -33,12 +35,16 @@ Result<void> Window::Run(Load load, Update update, Draw draw) {
     }
 
     float delta = clock.restart().asSeconds();
+    this->delta = delta;
 
     if (auto res = update(delta); !res)
       return res;
     this->_window.clear(this->_bg_color);
     if (auto res = draw(delta); !res)
       return res;
+
+    this->_window.draw(sf::Sprite(this->renderTexture.getTexture()));
+
     this->_window.display();
   }
 
