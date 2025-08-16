@@ -8,6 +8,8 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 CPMAddPackage("gh:SFML/SFML#3.0.1")
+CPMAddPackage("gh:g-truc/glm#master")
+CPMAddPackage("gh:skypjack/entt#master")
 
 add_library(core)
 target_include_directories(core PUBLIC include/core)
@@ -17,7 +19,7 @@ target_sources(core
 				src/core/renderer.cpp
 )
 
-target_link_libraries(core PUBLIC SFML::Graphics)
+target_link_libraries(core PUBLIC SFML::Graphics glm::glm EnTT::EnTT)
 
 # Engine executable
 add_executable(engine)

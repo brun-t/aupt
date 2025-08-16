@@ -4,6 +4,7 @@
 #include "types.hpp"
 #include "utils.hpp"
 #include <SFML/Graphics.hpp>
+#include <glm/vec2.hpp>
 #include <vector>
 
 namespace core {
@@ -54,8 +55,21 @@ public:
 
   Result<void> SetBg(const std::string &hex);
 
-  void Close() {
+  using vec2u = glm::vec<2, unsigned, glm::packed_highp>;
+  inline void Resize(vec2u &size) {
+    this->size = sf::Vector2u(size.x, size.y);
+  }
+
+  inline void Close() {
     this->_window.close();
+  }
+
+  inline float Time() const {
+    return globalClock.getElapsedTime().asSeconds();
+  }
+
+  inline void SetFPSLimit(ui limit) {
+    this->_window.setFramerateLimit(limit);
   }
 
 private:
@@ -64,7 +78,8 @@ private:
   sf::RenderWindow _window;
   sf::Color _bg_color;
   sf::RenderTexture renderTexture;
-  ui width, height;
+  sf::Vector2u size;
+  sf::Clock globalClock;
   float delta;
   std::string title;
   EventHandle handle;

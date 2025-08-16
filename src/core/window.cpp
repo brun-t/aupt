@@ -3,12 +3,18 @@
 
 namespace core {
 Window::Window(ui width, ui height, const std::string &title) {
-  this->height = height;
-  this->width = width;
+  this->size = sf::Vector2u(width, height);
   this->title = title;
   this->delta = 0.f;
-  this->_window = sf::RenderWindow(sf::VideoMode({this->width, this->height}), this->title);
-  this->renderTexture = sf::RenderTexture({this->width, this->height});
+  sf::ContextSettings settings;
+  settings.antiAliasingLevel = 16;
+  this->_window = sf::RenderWindow(
+      sf::VideoMode(this->size),
+      sf::String(this->title),
+      sf::Style::Default,
+      sf::State::Windowed,
+      settings);
+  this->renderTexture = sf::RenderTexture(this->size, settings);
 }
 
 Result<void> Window::SetBg(const std::string &bg) {
@@ -32,6 +38,10 @@ Result<void> Window::Run(Load load, Update update, Draw draw) {
   while (this->_window.isOpen()) {
     while (const std::optional event = this->_window.pollEvent()) {
       this->handle(Event(*event));
+      if (event->is<sf::Event::Resized>()) {
+        const sf::Event::Resized *ev = event->getIf<sf::Event::Resized>();
+        this->size = ev->size;
+      }
     }
 
     float delta = clock.restart().asSeconds();
@@ -39,11 +49,16 @@ Result<void> Window::Run(Load load, Update update, Draw draw) {
 
     if (auto res = update(delta); !res)
       return res;
+
+    this->_window.setSize(this->size);
+    [[maybe_unused]] bool _ = this->renderTexture.resize(this->size);
     this->_window.clear(this->_bg_color);
     if (auto res = draw(delta); !res)
       return res;
 
-    this->_window.draw(sf::Sprite(this->renderTexture.getTexture()));
+    sf::Texture texture = this->renderTexture.getTexture();
+    texture.setSmooth(true);
+    this->_window.draw(sf::Sprite(texture));
 
     this->_window.display();
   }

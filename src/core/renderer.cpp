@@ -12,8 +12,8 @@ Result<void> Renderer::Render() {
                  .Draw(this->_window.delta,
                        this->_window.renderTexture)
                  .match(
-                     [this](const sf::Drawable *draw) -> Result<void> {
-                       this->_window.renderTexture.draw(*draw);
+                     [this](std::pair<const sf::Drawable *, sf::Transform> pair) -> Result<void> {
+                       this->_window.renderTexture.draw(*pair.first, pair.second);
                        return Ok();
                      },
                      [this](auto err) -> Result<void> {
