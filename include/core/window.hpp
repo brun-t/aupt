@@ -60,6 +60,10 @@ public:
     this->size = sf::Vector2u(size.x, size.y);
   }
 
+  inline glm::vec2 GetSize() {
+    return glm::vec2{this->size.x, this->size.y};
+  }
+
   inline void Close() {
     this->_window.close();
   }

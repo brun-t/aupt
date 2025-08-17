@@ -44,6 +44,8 @@ Result<void> Window::Run(Load load, Update update, Draw draw) {
       }
     }
 
+    _window.setView(_window.getDefaultView());
+
     float delta = clock.restart().asSeconds();
     this->delta = delta;
 
@@ -57,7 +59,7 @@ Result<void> Window::Run(Load load, Update update, Draw draw) {
       return res;
 
     sf::Texture texture = this->renderTexture.getTexture();
-    texture.setSmooth(true);
+    texture.setSmooth(false);
     this->_window.draw(sf::Sprite(texture));
 
     this->_window.display();

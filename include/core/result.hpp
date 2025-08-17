@@ -2,10 +2,12 @@
 
 #include <concepts>
 #include <functional>
+#include <iostream>
 #include <optional>
 #include <source_location>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 namespace core {
 
@@ -18,7 +20,7 @@ template <typename T>
 using storage_t = std::conditional_t<std::is_void_v<T>, empty, T>;
 
 template <typename T = void, typename E = std::string>
-requires ConvertibleToString<E> class Result {
+requires ConvertibleToString<E> class [[nodiscard]] Result {
 public:
   using Value = storage_t<T>;
   using Err = std::function<E()>;
@@ -118,4 +120,21 @@ inline Result<T> Err(const std::string &message, const std::source_location loc 
   return Result<T>(message, loc);
 }
 
+inline std::vector<std::string> results;
+
+template <typename T = void>
+inline void Assert(Result<T> result) {
+  if (!result) {
+    results.push_back(result.error_string());
+  }
+}
+
+inline void DisplayErrors() {
+  for (auto &err : results) {
+    std::cerr << "Error: " << err << '\n';
+  }
+
+  if (!results.empty())
+    std::abort();
+}
 } // namespace core
