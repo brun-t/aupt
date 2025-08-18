@@ -1,12 +1,9 @@
 #pragma once
 
-#include "core/drawables.hpp"
 #include "core/renderer.hpp"
-#include "core/result.hpp"
 #include "core/stage.hpp"
 #include "core/window.hpp"
 #include <memory>
-
 
 class TriangleStage {
 public:
@@ -14,6 +11,10 @@ public:
 
   std::shared_ptr<core::Stage> GetStage() const {
     return stage;
+  }
+
+  operator std::shared_ptr<core::Stage>() const {
+    return GetStage();
   }
 
   void Update(float dt);

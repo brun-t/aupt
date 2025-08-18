@@ -1,6 +1,9 @@
 #include "core/renderer.hpp"
+#include "core/result.hpp"
 #include "core/window.hpp"
 #include "triangle.hpp"
+
+// Hello Ninja I have obviously changed
 
 int main() {
   core::Window window(800, 600, "Triangle scene");
@@ -15,7 +18,7 @@ int main() {
 
   // Use composition — TriangleStage holds its own Stage
   TriangleStage triangleStage(renderer, window);
-  renderer.AddStage(triangleStage.GetStage());
+  renderer.AddStage(triangleStage);
 
   core::Assert(window.Run(
       []() -> core::Result<void> {

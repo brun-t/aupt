@@ -35,7 +35,7 @@ public:
     static_assert(std::same_as<std::invoke_result_t<Func, entt::entity, Components &...>, Result<void>>, "Callback must return Result<void>.");
 
     for (auto entity : view) {
-      auto componentsTuple = view.get<Components...>(entity);
+      auto componentsTuple = view.template get<Components...>(entity);
       auto result = std::apply(
           [&](Components &...comps) -> Result<void> {
             return cb(entity, comps...);
@@ -53,7 +53,7 @@ public:
   }
 
   template <typename T>
-  inline [[nodiscard]] bool Has(entt::entity entity) {
+  [[nodiscard]] inline bool Has(entt::entity entity) {
     return registry.all_of<T>(entity);
   }
 
