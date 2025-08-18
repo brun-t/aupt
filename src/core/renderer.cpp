@@ -5,19 +5,20 @@ namespace core {
 Renderer::Renderer(Window &window)
     : _window(window){};
 
+void Renderer::AddStage(Stage_ptr stage) {
+  stages.push_back(stage);
+  core::Assert(AddFromStage(*stage));
+}
+
 Result<void> Renderer::AddFromStage(Stage &stage) {
-  return stage.Foreach([this](auto view, entt::entity entity) -> Result<void> {
-    auto &drawableComp = view.template get<core::DrawableComponent>(entity);
+  return stage.Foreach<Transform, DrawableComponent>([this](entt::entity entity, Transform &_, DrawableComponent &drawableComp) -> Result<void> {
     this->AddDrawable(drawableComp.drawable);
     return core::Ok();
   });
 }
 
 Result<void> Renderer::SyncFromStage(Stage &stage) {
-  return stage.Foreach([](auto view, entt::entity entity) -> Result<void> {
-    auto &transform = view.template get<Transform>(entity);
-    auto &drawableComp = view.template get<DrawableComponent>(entity);
-
+  return stage.Foreach<Transform, DrawableComponent>([](entt::entity entity, Transform &transform, DrawableComponent &drawableComp) -> Result<void> {
     if (drawableComp.drawable) {
       drawableComp.drawable->SetPosition(transform.position);
       drawableComp.drawable->SetScale(transform.scale);
@@ -29,24 +30,28 @@ Result<void> Renderer::SyncFromStage(Stage &stage) {
 }
 
 Result<void> Renderer::Render() {
-  this->_window.renderTexture.clear(this->_window._bg_color);
-  Result<void> result;
-  for (auto &drawable : this->drawables) {
-    result = (*drawable)
-                 .Draw(this->_window.delta,
-                       this->_window.renderTexture)
-                 .match(
-                     [this](std::pair<const sf::Drawable *, sf::Transform> pair) -> Result<void> {
-                       this->_window.renderTexture.draw(*pair.first, pair.second);
-                       return Ok();
-                     },
-                     [this](auto err) -> Result<void> {
-                       return Err(err);
-                     });
+  for (auto &stage : stages) {
+    core::Assert(SyncFromStage(*stage));
   }
-  this->_window.renderTexture.display();
+  _window.renderTexture.clear(_window._bg_color);
 
-  return result;
+  for (auto &drawable : drawables) {
+    auto result = drawable->Draw(_window.delta, _window.renderTexture)
+                      .match(
+                          [this](std::pair<const sf::Drawable *, sf::Transform> pair) -> Result<void> {
+                            _window.renderTexture.draw(*pair.first, pair.second);
+                            return Ok();
+                          },
+                          [](auto err) -> Result<void> {
+                            return Err(err);
+                          });
+
+    if (!result)
+      return result;
+  }
+
+  _window.renderTexture.display();
+  return Ok();
 }
 
 } // namespace core

@@ -1,13 +1,14 @@
-function(GetCPM)
-    set(CPM_PATH "${CMAKE_BINARY_DIR}/cmake/CPM.cmake")
+set(CPM_PATH "${CMAKE_BINARY_DIR}/cmake/CPM.cmake")
+set(CPM_VERSION v0.42.0)
 
-    if(NOT EXISTS ${CPM_PATH})
-        file(DOWNLOAD
-            https://github.com/cpm-cmake/CPM.cmake/releases/latest/download/get_cpm.cmake
-            ${CPM_PATH}
-            # Remove EXPECTED_HASH entirely for now
+get_filename_component(CPM_PATH ${CPM_PATH} ABSOLUTE)
+
+if(NOT EXISTS ${CPM_PATH})
+    file(DOWNLOAD
+        https://github.com/cpm-cmake/CPM.cmake/releases/download/${CPM_VERSION}/CPM.cmake
+        ${CPM_PATH}
+        # Remove EXPECTED_HASH entirely for now
         )
-    endif()
+endif()
 
-    include(${CPM_PATH})
-endfunction()
+include(${CPM_PATH})

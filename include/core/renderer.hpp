@@ -36,6 +36,7 @@ class Renderer {
 public:
   // Change Drawable_ptr to use shared_ptr
   using Drawable_ptr = std::shared_ptr<Drawable>;
+  using Stage_ptr = std::shared_ptr<Stage>;
   Renderer(Window &window);
   // Change AddDrawable to take a shared_ptr by value
   inline void AddDrawable(Drawable_ptr drawable) {
@@ -54,11 +55,13 @@ public:
 
   Result<void> AddFromStage(Stage &stage);
   Result<void> SyncFromStage(Stage &stage);
+  void AddStage(Stage_ptr stage);
 
   Result<void> Render();
 
 private:
   std::vector<Drawable_ptr> drawables;
+  std::vector<Stage_ptr> stages;
   Window &_window;
   sf::View _view;
 };

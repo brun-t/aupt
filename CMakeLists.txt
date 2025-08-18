@@ -4,8 +4,6 @@ project(Aupt)
 include(${CMAKE_SOURCE_DIR}/cmake/GetCPM.cmake)
 include(${CMAKE_SOURCE_DIR}/cmake/EmbedAsset.cmake)
 
-GetCPM()
-
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -33,11 +31,11 @@ target_link_libraries(core PUBLIC SFML::Graphics glm::glm EnTT::EnTT)
 
 # Engine executable
 add_executable(engine)
-target_include_directories(engine PUBLIC include)
+target_include_directories(engine PUBLIC include/engine include)
 
 target_sources(engine
     PRIVATE
         src/engine/main.cpp
-        # Add other engine sources
+        src/engine/triangle.cpp
 )
 target_link_libraries(engine PRIVATE core)

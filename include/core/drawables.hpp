@@ -295,7 +295,6 @@ public:
       text->setCharacterSize(newFontSize);
     }
 
-    // Build transform without scale (avoid bitmap zoom)
     sf::Transform transform;
     transform.translate(sf::Vector2f(position.x, position.y));
     transform.rotate(sf::degrees(rotation));
